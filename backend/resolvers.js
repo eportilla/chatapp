@@ -1,5 +1,5 @@
-const { Message } = require('./model');
 const chats = [];
+const MESSAGE_SENT = 'SENT';
 
 exports.resolvers = {
     Query: {
@@ -9,10 +9,23 @@ exports.resolvers = {
     },
 
     Mutation: {
-        sendMessage(_, { message }) {
-            const chat = {id: chats.length + 1, text: message.text, from: message.from, timestamp: new Date().toISOString()};
+        sendMessage(_, { message }, { pubSub }) {
+            const chat = {id: chats.length, text: message.text, from: message.from, timestamp: new Date().toISOString()};
             chats.push(chat);
+
+            pubSub.publish(MESSAGE_SENT, {
+                receivedMessage: chat
+            });
+
             return chat;
         },
+    },
+
+    Subscription: {
+        receivedMessage: {
+            subscribe(_, args, { pubSub }) {
+                return pubSub.asyncIterator(MESSAGE_SENT);
+            },
+        }
     },
 };

@@ -1,8 +1,16 @@
-const { GraphQLServer } = require('graphql-yoga');
-const { schema } = require('./typedefs');
+const { GraphQLServer, PubSub } = require('graphql-yoga');
+const { typeDefs } = require('./typedefs');
 const { resolvers } = require('./resolvers');
 
-const server = new GraphQLServer({ typeDefs: schema, resolvers: resolvers });
+const pubSub = new PubSub();
+
+const server = new GraphQLServer({ 
+    typeDefs, 
+    resolvers,
+    context: {
+        pubSub,
+    }
+});
 
 const options = {
     port: 4000,
