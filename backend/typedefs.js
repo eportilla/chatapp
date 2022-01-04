@@ -1,6 +1,6 @@
 const { buildSchema } = require('graphql');
 
-exports.schema = buildSchema(/* GraphQL */`
+exports.schema = /* GraphQL */`
     type User {
         id: ID!
         name: String!
@@ -23,6 +23,6 @@ exports.schema = buildSchema(/* GraphQL */`
     }
 
     type Mutation {
-        sendMessage(message: Message!): Chat
+        sendMessage(message: Message!): Chat!
     }
-`);
+`;
